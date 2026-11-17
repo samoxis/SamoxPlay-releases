@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src http:; form-action 'none'; base-uri 'none'">
+  <title>SamoxPlay Setup</title>
+  <link rel="stylesheet" href="./setup.css">
+  <script type="module" src="./setup.mjs"></script>
+</head>
+<body>
+  <main>
+    <h1 id="provider">SamoxPlay Setup</h1>
+    <form id="credentials" autocomplete="off" hidden>
+      <p>Keep the QR code open on the TV and use the same local network. If Chrome asks for local network access, tap Allow.</p>
+      <div id="fields"></div>
+      <button type="submit">Save on TV</button>
+    </form>
+    <p id="status" role="status" aria-live="polite"></p>
+    <noscript>Enable JavaScript and scan a new QR code on the TV.</noscript>
+  </main>
+</body>
+</html>

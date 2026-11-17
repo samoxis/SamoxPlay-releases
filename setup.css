@@ -1,0 +1,12 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Inter", system-ui, sans-serif;
+  line-height: 1.5;
+}
+body { margin: 0; }
+main { max-width: 28rem; margin: auto; padding: 2rem 1rem; }
+h1 { font-size: 1.5rem; margin-top: 0; }
+label { display: block; margin: 1rem 0; }
+input, button { box-sizing: border-box; min-height: 3rem; padding: 0.65rem; font: inherit; width: 100%; }
+input { display: block; margin-top: 0.25rem; }
+button { cursor: pointer; }

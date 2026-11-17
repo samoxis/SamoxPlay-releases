@@ -26,13 +26,13 @@ export function readInvitation(fragment) {
     (a === 10 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168)) &&
     Number(match[5]) >= 1024 && Number(match[5]) <= 65535;
   const label = value => typeof value === "string" && value.length >= 1 && value.length <= 80 && !control.test(value);
-  if (version !== 1 || !validAddress || typeof ticket !== "string" || !tokenPattern.test(ticket) ||
+  if (![1, 2].includes(version) || !validAddress || typeof ticket !== "string" || !tokenPattern.test(ticket) ||
       typeof key !== "string" || key.length !== 392 || !label(provider) || !Array.isArray(fields) ||
       fields.length < 1 || fields.length > 6 || fields.some(field => !Array.isArray(field) || field.length !== 3 ||
         !label(field[0]) || typeof field[1] !== "boolean" || !Number.isInteger(field[2]) || field[2] < 1 || field[2] > 8192)) {
     throw new Error("Invalid invitation");
   }
-  return { address, ticket, key: decodeUrl64(key), provider, fields };
+  return { version, address, ticket, key: decodeUrl64(key), provider, fields };
 }
 
 export async function sealForTv(invitation, values, webCrypto = globalThis.crypto) {
@@ -73,6 +73,9 @@ function showForm() {
     return;
   }
   document.querySelector("#provider").textContent = invitation.provider;
+  if (invitation.version === 1) {
+    document.querySelector("#instructions").append(" If Chrome asks for local network access, tap Allow.");
+  }
   const fields = document.querySelector("#fields");
   const form = document.querySelector("#credentials");
   const button = form.querySelector("button");
@@ -102,6 +105,13 @@ function showForm() {
     status.textContent = "Sending to the TV…";
     try {
       const envelope = await sealForTv(invitation, values);
+      if (invitation.version === 2) {
+        const packet = base64(encoder.encode(JSON.stringify(envelope)))
+          .replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
+        form.reset();
+        location.replace(`http://${invitation.address}/receive#${packet}`);
+        return;
+      }
       const response = await fetch(`http://${invitation.address}/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
